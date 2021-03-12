@@ -13,7 +13,7 @@
 
 - name: Ensure directories to export exist
   file:  # noqa 208
-    path: "{{ item.strip().split()[0] }}"
+    path: "{{ item.strip().split().pop() }}"
     state: directory
   loop: "{{ nfs_exports }}"
 
@@ -32,4 +32,3 @@
     name: nfs-server
     state: started
     enabled: true
-  when: nfs_exports|length
