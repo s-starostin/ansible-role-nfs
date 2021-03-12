@@ -1,0 +1,34 @@
+---
+
+- name: Ensure NFS utilities are installed.
+  dnf:
+    name: nfs-utils
+    state: present
+
+- name: Ensure rpcbind is running as configured.
+  systemd:
+    name: rpcbind
+    state: started
+    enabled: true
+
+- name: Ensure directories to export exist
+  file:  # noqa 208
+    path: "{{ item.strip().split().pop() }}"
+    state: directory
+  loop: "{{ nfs_exports }}"
+
+- name: Copy exports file.
+  template:
+    src: exports.j2
+    dest: /etc/exports
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload nfs
+
+- name: Ensure nfs is running.
+  systemd:
+    daemon_reload: true
+    name: nfs-server
+    state: started
+    enabled: true
