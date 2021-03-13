@@ -26,9 +26,20 @@
     mode: 0644
   notify: reload nfs
 
-- name: Ensure nfs is running.
+- name: Ensure nfs is running
   systemd:
     daemon_reload: true
     name: nfs-server
     state: started
     enabled: true
+
+- name: Configuring firewalld
+  ansible.posix.firewalld:
+    service: {{ item }}
+    permanent: true
+    state: enabled
+    immediate: true
+  loop:
+    - nfs
+    - rpcbind
+    - mountd
