@@ -41,5 +41,5 @@
     immediate: true
   loop:
     - nfs
-    - rpcbind
+    - rpc-bind
     - mountd
